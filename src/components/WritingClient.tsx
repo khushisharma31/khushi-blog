@@ -2,41 +2,10 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import FabricBackground from "@/components/FabricBackground";
-import PatchSection, { patches } from "@/components/PatchSection";
-import type { PatchVariant } from "@/components/PatchSection";
+import QuiltCard from "@/components/QuiltCard";
 import PatchStripSeparator from "@/components/PatchStripSeparator";
-import BotanicalCorner from "@/components/BotanicalCorner";
 import { PostMeta } from "@/lib/posts";
-
-// Map post type to a dark-background variant so the grid always reads as a rich quilt
-function typeToVariant(type: string | undefined, index: number): PatchVariant {
-  const map: Record<string, PatchVariant> = {
-    poem: "pink",
-    essay: "amber",
-    "thinking out loud": "mehendi",
-  };
-  const fallbacks: PatchVariant[] = ["rust", "teal", "indigo"];
-  const key = type?.toLowerCase() ?? "";
-  return map[key] ?? fallbacks[index % fallbacks.length];
-}
-
-// Corner accent colour per variant — picked from each patch's label colour
-const cornerColor: Record<PatchVariant, string> = {
-  pink:      "#F0A0A8",
-  amber:     "#F0C060",
-  mehendi:   "#A0C060",
-  rust:      "#D4A017",
-  teal:      "#70D0C8",
-  indigo:    "#A0A0E0",
-  parchment: "#C0572D",
-  rose:      "#C97B84",
-  sage:      "#5B7C3D",
-  gold:      "#D4A017",
-};
-
-function isLightVariant(variant: PatchVariant) {
-  return patches[variant].text === "#2C1A0E" || patches[variant].text === "#1A2810";
-}
+import { typeToVariant, slugSeed, isLight } from "@/lib/quilt";
 
 export default function WritingClient({ posts }: { posts: PostMeta[] }) {
   const [featured, ...rest] = posts;
@@ -103,8 +72,7 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
             </p>
             <Link href={`/${featured.slug}`} style={{ textDecoration: "none", display: "block" }}>
               <motion.div whileHover={{ y: -4, transition: { type: "spring", stiffness: 380, damping: 22 } }}>
-                <PatchSection variant="parchment">
-                  <BotanicalCorner color="#C0572D" opacity={0.18} corner="tr" />
+                <QuiltCard variant="parchment" seed={slugSeed(featured.slug)}>
                   {featured.type && (
                     <p style={{
                       fontFamily: "var(--font-dm-sans), sans-serif",
@@ -151,7 +119,7 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
                       })}
                     </p>
                   )}
-                </PatchSection>
+                </QuiltCard>
               </motion.div>
             </Link>
           </motion.div>
@@ -162,7 +130,7 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {rest.map((post, i) => {
               const variant = typeToVariant(post.type, i);
-              const light = isLightVariant(variant);
+              const light = isLight(variant);
               const date = post.date
                 ? new Date(post.date).toLocaleDateString("en-IN", {
                     day: "numeric", month: "short", year: "numeric",
@@ -179,15 +147,14 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
                   style={{ cursor: "pointer" }}
                 >
                   <Link href={`/${post.slug}`} style={{ textDecoration: "none", display: "block" }}>
-                    <PatchSection variant={variant}>
-                      <BotanicalCorner color={cornerColor[variant]} opacity={0.2} corner="tr" />
+                    <QuiltCard variant={variant} seed={slugSeed(post.slug)}>
                       {post.type && (
                         <p style={{
                           fontFamily: "var(--font-dm-sans), sans-serif",
                           fontSize: "0.6rem",
                           letterSpacing: "0.18em",
                           textTransform: "uppercase",
-                          color: light ? "rgba(44,26,14,0.5)" : "rgba(243,233,220,0.5)",
+                          color: light ? "rgba(44,26,14,0.55)" : "rgba(243,233,220,0.55)",
                           marginBottom: "0.6rem",
                         }}>
                           {post.type}
@@ -208,7 +175,7 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
                           fontFamily: "var(--font-lora), Georgia, serif",
                           fontSize: "0.875rem",
                           lineHeight: 1.65,
-                          color: light ? "rgba(44,26,14,0.65)" : "rgba(243,233,220,0.65)",
+                          color: light ? "rgba(44,26,14,0.68)" : "rgba(243,233,220,0.65)",
                           marginBottom: "1rem",
                           display: "-webkit-box",
                           WebkitLineClamp: 3,
@@ -221,12 +188,12 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
                       <p style={{
                         fontFamily: "var(--font-dm-sans), sans-serif",
                         fontSize: "0.65rem",
-                        color: light ? "rgba(44,26,14,0.4)" : "rgba(243,233,220,0.4)",
+                        color: light ? "rgba(44,26,14,0.45)" : "rgba(243,233,220,0.4)",
                         letterSpacing: "0.06em",
                       }}>
                         {date}
                       </p>
-                    </PatchSection>
+                    </QuiltCard>
                   </Link>
                 </motion.div>
               );

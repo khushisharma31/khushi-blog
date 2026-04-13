@@ -3,10 +3,13 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import FabricBackground from "@/components/FabricBackground";
 import PatchSection from "@/components/PatchSection";
+import QuiltCard from "@/components/QuiltCard";
+import { type PatchVariant } from "@/components/PatchSection";
 import PatchStripSeparator from "@/components/PatchStripSeparator";
 import MughalTree from "@/components/MughalTree";
 import BotanicalCorner from "@/components/BotanicalCorner";
 import { PostMeta } from "@/lib/posts";
+import { slugSeed, isLight } from "@/lib/quilt";
 
 // Quiet centered text between sections — feels like a passing thought
 function NarrativeBridge({ children }: { children: React.ReactNode }) {
@@ -155,8 +158,9 @@ export default function HomeClient({ posts }: { posts: PostMeta[] }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {recent.map((post, i) => {
-              const variants = ["rust", "indigo", "mehendi"] as const;
-              const cornerColors = ["#D4A017", "#A0A0E0", "#A0C060"] as const;
+              const variants: PatchVariant[] = ["rust", "teal", "gold"];
+              const variant = variants[i % variants.length];
+              const light = isLight(variant);
               const date = post.date
                 ? new Date(post.date).toLocaleDateString("en-IN", {
                     day: "numeric", month: "short", year: "numeric",
@@ -173,20 +177,14 @@ export default function HomeClient({ posts }: { posts: PostMeta[] }) {
                   style={{ cursor: "pointer" }}
                 >
                   <Link href={`/${post.slug}`} style={{ textDecoration: "none", display: "block" }}>
-                    <PatchSection variant={variants[i % variants.length]}>
-                      {/* One botanical corner per card — top right only */}
-                      <BotanicalCorner
-                        color={cornerColors[i % cornerColors.length]}
-                        opacity={0.2}
-                        corner="tr"
-                      />
+                    <QuiltCard variant={variant} seed={slugSeed(post.slug)}>
                       {post.type && (
                         <p style={{
                           fontFamily: "var(--font-dm-sans), sans-serif",
                           fontSize: "0.6rem",
                           letterSpacing: "0.18em",
                           textTransform: "uppercase",
-                          color: "rgba(243,233,220,0.5)",
+                          color: light ? "rgba(44,26,14,0.55)" : "rgba(243,233,220,0.55)",
                           marginBottom: "0.75rem",
                         }}>
                           {post.type}
@@ -197,7 +195,7 @@ export default function HomeClient({ posts }: { posts: PostMeta[] }) {
                         fontSize: "1.1875rem",
                         fontWeight: 400,
                         lineHeight: 1.35,
-                        color: "#F3E9DC",
+                        color: light ? "#2C1A0E" : "#F3E9DC",
                         marginBottom: "0.75rem",
                       }}>
                         {post.title}
@@ -207,7 +205,7 @@ export default function HomeClient({ posts }: { posts: PostMeta[] }) {
                           fontFamily: "var(--font-lora), Georgia, serif",
                           fontSize: "0.875rem",
                           lineHeight: 1.7,
-                          color: "rgba(243,233,220,0.65)",
+                          color: light ? "rgba(44,26,14,0.68)" : "rgba(243,233,220,0.65)",
                           marginBottom: "1.25rem",
                           display: "-webkit-box",
                           WebkitLineClamp: 3,
@@ -220,12 +218,12 @@ export default function HomeClient({ posts }: { posts: PostMeta[] }) {
                       <p style={{
                         fontFamily: "var(--font-dm-sans), sans-serif",
                         fontSize: "0.65rem",
-                        color: "rgba(243,233,220,0.4)",
+                        color: light ? "rgba(44,26,14,0.45)" : "rgba(243,233,220,0.4)",
                         letterSpacing: "0.06em",
                       }}>
                         {date}
                       </p>
-                    </PatchSection>
+                    </QuiltCard>
                   </Link>
                 </motion.div>
               );

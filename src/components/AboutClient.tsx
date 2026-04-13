@@ -74,6 +74,36 @@ export default function AboutClient() {
               of themselves with you. I&apos;ve been writing since — journals, poems, fragments,
               ideas that live between a line of code and a line of verse.
             </p>
+
+            {/* ── MAPLE-TREE POEM EXCERPT ────────────────────────────
+                 Placeholder — replace these four lines with the actual
+                 first-poem excerpt when ready. */}
+            <blockquote style={{
+              margin: "2em 0 2.25em",
+              padding: "0.25em 0 0.25em 1.5em",
+              borderLeft: "2px solid #C0572D66",
+              fontStyle: "italic",
+              fontSize: "1rem",
+              lineHeight: 2,
+              color: "#6B4C35",
+              fontFamily: "var(--font-lora), Georgia, serif",
+            }}>
+              A maple tree holds what it cannot keep —<br />
+              the red leaves, the gold ones, the ones still green.<br />
+              Some people leave pieces of themselves behind<br />
+              and call it love. Or autumn. Or the wind.
+              <span style={{
+                display: "block",
+                marginTop: "0.75em",
+                fontSize: "0.65rem",
+                fontStyle: "normal",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "#A8886E",
+              }}>
+                — from the first poem
+              </span>
+            </blockquote>
             <p style={{ marginBottom: "1.5em" }}>
               For a long time I kept these two selves separate. The engineer and the poet.
               The one who builds systems and the one who breaks open feelings.
