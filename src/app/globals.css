@@ -215,6 +215,39 @@ body {
   }
 }
 
+/* ── View transitions ────────────────────────────────────────
+   When you click a writing card, the browser morphs the quilt
+   from the grid into the wide post-header quilt. A slow blur
+   mid-flight hides pixel interpolation artefacts and makes the
+   whole move feel like fabric unfolding, not sliding. The timing
+   is deliberately unhurried — the user is meant to watch this. */
+::view-transition-group(*) {
+  animation-duration: 1100ms;
+  animation-timing-function: cubic-bezier(.22, .9, .25, 1);
+}
+::view-transition-image-pair(*) {
+  animation-name: quilt-blur;
+  animation-duration: 1100ms;
+  animation-timing-function: ease-in-out;
+}
+@keyframes quilt-blur {
+  0%   { filter: blur(0);     opacity: 1;   }
+  30%  { filter: blur(5px);   opacity: 0.92;}
+  55%  { filter: blur(6px);   opacity: 0.9; }
+  80%  { filter: blur(2.5px); opacity: 0.96;}
+  100% { filter: blur(0);     opacity: 1;   }
+}
+
+/* Respect users who dial motion down */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
 /* Subtle text selection */
 ::selection {
   background: #E08040;

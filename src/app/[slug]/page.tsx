@@ -93,7 +93,7 @@ export default async function PostPage({ params }: PageProps) {
         className={`${containerClass} mx-auto px-6`}
         style={{ paddingTop: "3rem", paddingBottom: "2rem" }}
       >
-        <QuiltCard variant={variant} seed={seed} wide>
+        <QuiltCard variant={variant} seed={seed} wide transitionName={`quilt-${slug}`}>
           <div style={{ textAlign: centered ? "center" : "left" }}>
             {/* Type badge + date row */}
             <div style={{

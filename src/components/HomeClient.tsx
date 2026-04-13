@@ -177,7 +177,11 @@ export default function HomeClient({ posts }: { posts: PostMeta[] }) {
                   style={{ cursor: "pointer" }}
                 >
                   <Link href={`/${post.slug}`} style={{ textDecoration: "none", display: "block" }}>
-                    <QuiltCard variant={variant} seed={slugSeed(post.slug)}>
+                    <QuiltCard
+                      variant={variant}
+                      seed={slugSeed(post.slug)}
+                      transitionName={`quilt-${post.slug}`}
+                    >
                       {post.type && (
                         <p style={{
                           fontFamily: "var(--font-dm-sans), sans-serif",

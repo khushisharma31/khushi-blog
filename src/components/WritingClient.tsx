@@ -72,7 +72,11 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
             </p>
             <Link href={`/${featured.slug}`} style={{ textDecoration: "none", display: "block" }}>
               <motion.div whileHover={{ y: -4, transition: { type: "spring", stiffness: 380, damping: 22 } }}>
-                <QuiltCard variant="parchment" seed={slugSeed(featured.slug)}>
+                <QuiltCard
+                  variant="parchment"
+                  seed={slugSeed(featured.slug)}
+                  transitionName={`quilt-${featured.slug}`}
+                >
                   {featured.type && (
                     <p style={{
                       fontFamily: "var(--font-dm-sans), sans-serif",
@@ -147,7 +151,11 @@ export default function WritingClient({ posts }: { posts: PostMeta[] }) {
                   style={{ cursor: "pointer" }}
                 >
                   <Link href={`/${post.slug}`} style={{ textDecoration: "none", display: "block" }}>
-                    <QuiltCard variant={variant} seed={slugSeed(post.slug)}>
+                    <QuiltCard
+                      variant={variant}
+                      seed={slugSeed(post.slug)}
+                      transitionName={`quilt-${post.slug}`}
+                    >
                       {post.type && (
                         <p style={{
                           fontFamily: "var(--font-dm-sans), sans-serif",

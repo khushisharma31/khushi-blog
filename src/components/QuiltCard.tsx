@@ -1,6 +1,14 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import type { CSSProperties } from "react";
+import * as React from "react";
+
+// React 19.2 exports `ViewTransition` but the @types/react version installed
+// exposes it only behind experimental/canary — `react` from Next's bundled
+// runtime has it at runtime. We grab it via a typed cast.
+const ViewTransition = (
+  React as unknown as { ViewTransition: React.ComponentType<{ name?: string; children: ReactNode }> }
+).ViewTransition;
 import { patches, type PatchVariant } from "@/lib/patches";
 
 // ── FABRIC SWATCH POOL ──────────────────────────────────────
@@ -90,6 +98,57 @@ function seeded(seed: number) {
   };
 }
 
+// Pick an index at least a few steps away from the current one so the
+// hover-swap feels distinctly different, not a tiny tweak.
+function jumpNext(cur: number) {
+  const jump = 3 + Math.floor(Math.random() * 8);
+  return (cur + jump) % swatches.length;
+}
+
+// ── Individual interactive patch ────────────────────────────
+// Each patch is its own tiny piece of the quilt with its own state.
+// Hover-enter swaps it to a new swatch (and it stays) so the user
+// literally paints the card as they move across it.
+function Patch({
+  initialIdx,
+  flexGrow,
+  borderRight,
+}: {
+  initialIdx: number;
+  flexGrow: number;
+  borderRight: boolean;
+}) {
+  const [idx, setIdx] = useState(initialIdx);
+  const [flash, setFlash] = useState(false);
+
+  const onEnter = () => {
+    setIdx((cur) => jumpNext(cur));
+    setFlash(true);
+    // release the flash state on next frame so CSS transition runs
+    requestAnimationFrame(() => requestAnimationFrame(() => setFlash(false)));
+  };
+
+  return (
+    <div
+      onMouseEnter={onEnter}
+      onFocus={onEnter}
+      tabIndex={-1}
+      style={{
+        ...swatchStyle(swatches[idx]),
+        flexGrow,
+        flexShrink: 1,
+        flexBasis: 0,
+        borderRight: borderRight ? "1px dashed rgba(0,0,0,0.32)" : "none",
+        transition: "transform 260ms cubic-bezier(.2,.8,.2,1), filter 260ms ease",
+        transform: flash ? "scale(1.04)" : "scale(1)",
+        filter: flash ? "brightness(1.12)" : "brightness(1)",
+        cursor: "pointer",
+        position: "relative",
+      }}
+    />
+  );
+}
+
 interface QuiltCardProps {
   children: ReactNode;
   seed?: number;
@@ -98,6 +157,10 @@ interface QuiltCardProps {
   /** Wider quilt header — more patches per row so density stays right at
    *  full-container widths (e.g. the post page header). */
   wide?: boolean;
+  /** If provided, wraps the card in a React <ViewTransition> with this name
+   *  so the browser morphs between matching names across routes
+   *  (writing grid card ↔ post page header). */
+  transitionName?: string;
 }
 
 export default function QuiltCard({
@@ -106,6 +169,7 @@ export default function QuiltCard({
   variant = "parchment",
   className = "",
   wide = false,
+  transitionName,
 }: QuiltCardProps) {
   const p = patches[variant];
   const rand = seeded(seed + 1);
@@ -120,20 +184,19 @@ export default function QuiltCard({
   const row2H = wide ? 58 : 52;
   const contentPad = wide ? "2.25rem 2.25rem 2.5rem" : "1.75rem 1.75rem 2rem";
 
-  // Pick swatches avoiding immediate neighbour repeats
-  const chosen: Swatch[] = [];
+  // Pick initial swatch indices avoiding immediate neighbour repeats
+  const initialIdxs: number[] = [];
   for (let i = 0; i < total; i++) {
-    let pick!: Swatch;
+    let pickIdx = 0;
     for (let a = 0; a < 4; a++) {
-      const idx = Math.floor(rand(i + a * 1000) * swatches.length);
-      pick = swatches[idx];
-      if (i === 0 || chosen[i - 1].bg !== pick.bg) break;
+      pickIdx = Math.floor(rand(i + a * 1000) * swatches.length);
+      if (i === 0 || swatches[initialIdxs[i - 1]].bg !== swatches[pickIdx].bg) break;
     }
-    chosen.push(pick);
+    initialIdxs.push(pickIdx);
   }
   const widths = Array.from({ length: total }, (_, i) => 0.7 + rand(i + 200) * 0.9);
 
-  return (
+  const card = (
     <div
       className={className}
       style={{
@@ -149,16 +212,12 @@ export default function QuiltCard({
       {/* ── Patchwork header ──────────────────────────────────── */}
       <div style={{ position: "relative" }} aria-hidden="true">
         <div style={{ display: "flex", height: `${row1H}px` }}>
-          {chosen.slice(0, row1).map((s, i) => (
-            <div
+          {initialIdxs.slice(0, row1).map((idx, i) => (
+            <Patch
               key={`r1-${i}`}
-              style={{
-                ...swatchStyle(s),
-                flexGrow: widths[i],
-                flexShrink: 1,
-                flexBasis: 0,
-                borderRight: i < row1 - 1 ? "1px dashed rgba(0,0,0,0.32)" : "none",
-              }}
+              initialIdx={idx}
+              flexGrow={widths[i]}
+              borderRight={i < row1 - 1}
             />
           ))}
         </div>
@@ -167,16 +226,12 @@ export default function QuiltCard({
           height: `${row2H}px`,
           borderTop: "1px dashed rgba(0,0,0,0.34)",
         }}>
-          {chosen.slice(row1, total).map((s, i) => (
-            <div
+          {initialIdxs.slice(row1, total).map((idx, i) => (
+            <Patch
               key={`r2-${i}`}
-              style={{
-                ...swatchStyle(s),
-                flexGrow: widths[i + row1],
-                flexShrink: 1,
-                flexBasis: 0,
-                borderRight: i < row2 - 1 ? "1px dashed rgba(0,0,0,0.32)" : "none",
-              }}
+              initialIdx={idx}
+              flexGrow={widths[i + row1]}
+              borderRight={i < row2 - 1}
             />
           ))}
         </div>
@@ -210,4 +265,7 @@ export default function QuiltCard({
       </div>
     </div>
   );
+
+  if (!transitionName) return card;
+  return <ViewTransition name={transitionName}>{card}</ViewTransition>;
 }
