@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@theme {
+  /* Warm maple palette */
+  --color-cream: #FDF6EC;
+  --color-cream-deep: #F5EAD8;
+  --color-cream-border: #E8D4B8;
+  --color-ink: #2C1A0E;
+  --color-ink-muted: #6B4C35;
+  --color-ink-faint: #A8886E;
+  --color-amber: #C4622D;
+  --color-amber-warm: #E08040;
+  --color-rust: #8B3A1F;
+  --color-terracotta: #B85C38;
+  --color-patch-1: #FDF6EC;
+  --color-patch-2: #F8EFE0;
+  --color-patch-3: #F2E6D0;
+
+  /* Typography */
+  --font-serif: var(--font-lora);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-fira-code);
+}
+
+:root {
+  --background: #FDF6EC;
+  --foreground: #2C1A0E;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Prose — for all long-form writing */
+.prose-khushi {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: #2C1A0E;
+  max-width: 68ch;
+}
+
+.prose-khushi p {
+  margin-bottom: 1.5em;
+}
+
+.prose-khushi h1, .prose-khushi h2, .prose-khushi h3 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #2C1A0E;
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+
+.prose-khushi h1 { font-size: 2rem; }
+.prose-khushi h2 { font-size: 1.5rem; }
+.prose-khushi h3 { font-size: 1.2rem; }
+
+.prose-khushi a {
+  color: #C4622D;
+  text-decoration: underline;
+  text-decoration-color: #E8D4B8;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s;
+}
+
+.prose-khushi a:hover {
+  text-decoration-color: #C4622D;
+}
+
+.prose-khushi blockquote {
+  border-left: 2px solid #C4622D;
+  padding-left: 1.25em;
+  color: #6B4C35;
+  font-style: italic;
+  margin: 2em 0;
+}
+
+.prose-khushi pre {
+  background: #F2E6D0;
+  border: 1px solid #E8D4B8;
+  border-radius: 6px;
+  padding: 1.25em;
+  overflow-x: auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.prose-khushi code {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875em;
+  background: #F2E6D0;
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  color: #8B3A1F;
+}
+
+.prose-khushi pre code {
+  background: transparent;
+  padding: 0;
+  color: #2C1A0E;
+}
+
+.prose-khushi hr {
+  border: none;
+  border-top: 1px solid #E8D4B8;
+  margin: 3em 0;
+}
+
+/* Poetry layout */
+.prose-khushi .poem {
+  font-style: italic;
+  line-height: 2;
+  padding-left: 2em;
+}
+
+/* Subtle text selection */
+::selection {
+  background: #E08040;
+  color: #FDF6EC;
+}
+
+/* Nav link style */
+.nav-link {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6B4C35;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #C4622D;
+}

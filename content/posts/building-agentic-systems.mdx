@@ -1,0 +1,36 @@
+---
+title: what I've learned building agentic systems
+date: "2026-04-05"
+excerpt: Agents fail at the edges — and the edges are almost always human.
+type: essay
+---
+
+Every agentic system I've built has taught me the same thing in a different costume: **the hardest part is not the AI.**
+
+The hardest part is the boundary between what the model thinks it understands and what the system actually needs to do.
+
+## The illusion of instruction-following
+
+When you write a prompt, you're writing a contract. The model signs it, but not the way you think. It signs the *spirit* it inferred, not the letter you wrote. And those two things are almost never the same.
+
+This gap — between what you meant and what was understood — is where agentic systems break.
+
+Early on, I'd patch this with more words. Longer prompts. More examples. More constraints. What I've learned is that more words narrows the gap but never closes it. What actually helps:
+
+1. **Small, composable tasks** — Give the agent one clear job. The moment a task contains "and", you're asking for trouble.
+2. **Explicit state** — Don't let the agent carry mental state across steps. Write it down, pass it forward, make it observable.
+3. **Graceful failure surfaces** — Design for the agent being wrong. Because it will be. The question is whether the system recovers.
+
+## On building something you don't fully control
+
+There's a strange feeling in deploying an agent. You've written the architecture, defined the tools, shaped the prompts — and then you let go.
+
+It makes decisions you didn't predict. Sometimes better than yours. Often not.
+
+I've started thinking about it less like engineering and more like gardening. You prepare the conditions. You don't control the growth.
+
+## What I'm still figuring out
+
+Evaluation. Always evaluation. How do you know if an agentic system is *actually* better when the output is open-ended, contextual, and often subjective?
+
+I don't have a clean answer yet. But I'm working on it — and I'll write about it here when I do.
