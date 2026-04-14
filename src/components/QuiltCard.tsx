@@ -56,7 +56,10 @@ const swatches: Swatch[] = [
 ];
 
 function swatchStyle(s: Swatch): CSSProperties {
-  const style: CSSProperties = { background: s.bg };
+  // Use backgroundColor (not the `background` shorthand) so we can layer
+  // backgroundImage/backgroundSize on top without React + the browser
+  // fighting over normalised shorthand values at hydration time.
+  const style: CSSProperties = { backgroundColor: s.bg };
   if (!s.pattern || s.pattern === "solid") return style;
   const c = s.pc ?? "rgba(255,255,255,0.2)";
   switch (s.pattern) {
@@ -194,7 +197,13 @@ export default function QuiltCard({
     }
     initialIdxs.push(pickIdx);
   }
-  const widths = Array.from({ length: total }, (_, i) => 0.7 + rand(i + 200) * 0.9);
+  // Round to 3 decimals. Full-precision floats like 1.5601850189503237
+  // round-trip differently through the browser's CSSOM (which stores only
+  // ~6 significant figures), triggering a hydration mismatch against the
+  // server-rendered HTML.
+  const widths = Array.from({ length: total }, (_, i) =>
+    Math.round((0.7 + rand(i + 200) * 0.9) * 1000) / 1000
+  );
 
   const card = (
     <div

@@ -41,7 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${lora.variable} ${dmSans.variable} ${firaCode.variable}`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${lora.variable} ${dmSans.variable} ${firaCode.variable}`}
+    >
       <body style={{ minHeight: "100vh", background: "#FDF0E0", margin: 0 }}>
 
         <Nav />
